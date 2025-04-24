@@ -5,9 +5,9 @@ import asyncio
 async def get_post(session, pid):
     url = "https://winry.khashaev.ru/posts/" + str(pid) 
     try:
-        resp = await session.get(url)
-        if resp.status == 200:
-            data = await resp.json()  
+        r = await session.get(url)
+        if r.status == 200:
+            data = await r.json()  
             return data
         else:
             print(f"ID {pid} 404")  
@@ -18,15 +18,15 @@ async def get_post(session, pid):
 
 def find_ids(node):
     id_list = [node["id"]]  
-    for child in node["replies"]:
-        id_list += find_ids(child)
+    for i in node["replies"]:
+        id_list += find_ids(i)
     return id_list
 
 
-def add_content(node, content_map):
-    node["body"] = content_map.get(node["id"], "") 
+def add_content(node, c_map):
+    node["body"] = c_map.get(node["id"], "") 
     for child_node in node["replies"]:
-        add_content(child_node, content_map)
+        add_content(child_node, c_map)
 
 async def main():
     
